@@ -20,7 +20,7 @@ func NewCaseRepository(db *sql.DB) CaseRepository {
 
 func (r *caseRepo) GetAllCases() ([]domain.Case, error) {
 	rows, err := r.db.Query(`
-        SELECT id, title, motor, photoUrlCase, manufacturing_time
+        SELECT id, title, motor, photoUrlCase, manufacturingTime
         FROM cases
         ORDER BY id
     `)
