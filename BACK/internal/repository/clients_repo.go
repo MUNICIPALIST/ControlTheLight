@@ -20,7 +20,7 @@ func NewClientRepository(db *sql.DB) ClientRepository {
 
 func (r *clientRepo) CreateClient(c *domain.Client) error {
 	query := `
-        INSERT INTO clients (full_name, phone_number)
+        INSERT INTO clients (fullName, phoneNumber)
         VALUES ($1, $2)
         RETURNING id
     `

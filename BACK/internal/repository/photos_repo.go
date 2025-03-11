@@ -20,7 +20,7 @@ func NewPhotoRepository(db *sql.DB) PhotoRepository {
 
 func (r *photoRepo) GetAllPhotos() ([]domain.Photo, error) {
 	rows, err := r.db.Query(`
-        SELECT id, photo_url
+        SELECT id, photoUrl
         FROM photos
         ORDER BY id
     `)
