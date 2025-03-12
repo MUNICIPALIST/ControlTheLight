@@ -44,3 +44,72 @@ CREATE TABLE clients (
 );
 
 
+
+
+
+
+
+
+1. Prerequisites
+
+Before you begin, make sure you have the following installed on your machine:
+	•	Minikube (for running Kubernetes locally)
+	•	kubectl (Kubernetes CLI tool)
+	•	Docker (for building Docker images)
+
+
+If Minikube is not installed, follow these steps:
+
+For Linux (Debian/Ubuntu):
+```
+sudo apt-get update
+sudo apt-get install -y apt-transport-https
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube
+sudo mv minikube /usr/local/bin/
+```
+
+Start Minikube
+
+run that command 
+```
+minikube start
+```
+
+
+Set up Docker in Minikube
+```
+eval $(minikube docker-env)
+```
+
+Build Docker Image
+
+```
+cd BACK
+docker build -t curtainsback .
+```
+
+Apply Kubernetes Configurations
+```
+kubectl apply -f backend-deployment.yaml
+kubectl apply -f backend-service.yaml
+kubectl apply -f backend-configmap.yaml  
+kubectl apply -f backend-secret.yaml  
+```
+
+Check if Your Pod is Running
+```
+kubectl get pods
+```
+
+Access Your Backend
+```
+minikube service backend-service --url
+```
+
+Stop Minikube
+```
+minikube stop
+```
+
+

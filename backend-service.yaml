@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 80        # Port exposed to the external world
+      targetPort: 8080 # The port where the backend is running inside the container
+  type: NodePort      # Exposes the service outside the cluster
