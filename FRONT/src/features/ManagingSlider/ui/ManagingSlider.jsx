@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MANAGING_TYPES } from "../model/constants/categories";
 
+import style from "../ui/style.module.scss";
+
 const ManagingSlider = () => {
   const [currentItem, setCurrentItem] = useState(0);
 
@@ -15,15 +17,17 @@ const ManagingSlider = () => {
 
   return (
     <section className="w-full my-40 px-[10%]">
-      <h2 className="text-2xl font-bold mb-8">УПРАВЛЕНИЕ ЭЛЕКТРОКАРНИЗОМ</h2>
+      <h2 className="font-poiret font-semibold text-[40px] max-w-3xl text-center mx-auto mb-16">
+        УПРАВЛЕНИЕ ЭЛЕКТРОКАРНИЗОМ
+      </h2>
 
       <div className="flex justify-between">
-        <ul className="pt-12 flex flex-col justify-between space-y-6">
+        <ul className="pt-12 flex flex-col justify-between space-y-12">
           {MANAGING_TYPES.map((obj, index) => (
             <motion.li
               key={obj.id}
-              className={`cursor-pointer text-4xl font-bold transition-colors duration-300 ${
-                index === currentItem ? "text-black" : "text-zinc-400"
+              className={`cursor-pointer text-4xl font-jost font-normal transition-colors duration-300 ${
+                index === currentItem ? "text-black" : "text-zinc-300"
               }`}
               onClick={() => setCurrentItem(index)}
               whileHover={{ scale: 1.02 }}
@@ -36,19 +40,22 @@ const ManagingSlider = () => {
           ))}
         </ul>
 
-        <div className="relative w-[40vw] h-[40vh] overflow-hidden">
+        <div className="my-auto relative w-[40vw] h-[40vh] flex">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentItem}
-              className="w-full h-full flex items-center justify-center"
+              className="absolute inset-0 flex items-center justify-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
               <img
-                className="max-w-full max-h-full object-contain"
-                src={MANAGING_TYPES[currentItem].iconUrl || "/placeholder.svg"}
+                className={`max-w-full max-h-full object-contain ${style.dropShadow}`}
+                src={
+                  MANAGING_TYPES[currentItem].iconUrl ||
+                  "/placeholder.svg?height=300&width=300"
+                }
                 alt={MANAGING_TYPES[currentItem].alt}
               />
             </motion.div>

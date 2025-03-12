@@ -1,0 +1,32 @@
+.parallax-banner {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-content {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .parallax-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}
