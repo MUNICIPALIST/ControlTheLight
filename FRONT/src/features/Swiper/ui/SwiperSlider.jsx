@@ -1,77 +1,141 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, EffectCoverflow, Autoplay } from "swiper/modules";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import SkeletonImage from "./skeletonImage";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-coverflow";
-import { Navigation, EffectCoverflow, Autoplay } from "swiper/modules";
-import styles from "../ui/style.module.scss";
+import "swiper/css/pagination";
 
-const API_URL = "https://671e15491dfc429919813dc2.mockapi.io/reactpizza/slide";
+import styles from "./style.module.scss";
+
+const API_URL = "/api/photos";
 
 const SwiperSlider = () => {
   const [slides, setSlides] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [swiper, setSwiper] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    const fetchSlides = async () => {
-      try {
-        const response = await axios.get(API_URL);
+  const fetchAllSlides = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(API_URL);
+      console.log(response);
+      if (Array.isArray(response.data) && response.data.length > 0) {
         setSlides(response.data);
-      } catch (err) {
-        console.error("Ошибка загрузки слайдов:", err);
-        setError("Ошибка загрузки слайдов");
-      } finally {
-        setIsLoading(false);
+      } else {
+        setError("Не удалось загрузить данные");
       }
-    };
-
-    fetchSlides();
+    } catch (err) {
+      console.error("Ошибка загрузки слайдов:", err);
+      setError("Ошибка загрузки слайдов");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  if (isLoading) return <p>Загрузка...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
-  if (!slides.length) return <p>Нет слайдов</p>;
+  useEffect(() => {
+    fetchAllSlides();
+  }, [fetchAllSlides]);
+
+  const handlePrev = () => {
+    if (swiper) swiper.slidePrev();
+  };
+
+  const handleNext = () => {
+    if (swiper) swiper.slideNext();
+  };
+
+  if (isLoading) {
+    return (
+      <div className={`relative ${styles.slider} top-[50%] h-[100%]`}>
+        <div className={`${styles.slider__container} relative`}>
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className={`${styles.skeleton_slide}`}>
+              <SkeletonImage className="w-full h-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full bg-red-100 text-red-800 p-4 rounded">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (!slides.length) {
+    return <p className="text-center py-10">Нет доступных слайдов</p>;
+  }
 
   return (
-    <Swiper
-      modules={[Navigation, EffectCoverflow, Autoplay]}
-      effect="coverflow"
-      grabCursor={true}
-      centeredSlides={true}
-      slidesPerView={2}
-      loop={true}
-      autoplay={{ delay: 3000, disableOnInteraction: false }}
-      lazy={{ loadPrevNext: true }}
-      coverflowEffect={{
-        rotate: 0,
-        stretch: 0,
-        depth: 100,
-        modifier: 1.5,
-        slideShadows: false,
-      }}
-      navigation
-      className={styles.slider}
-      breakpoints={{
-        320: { slidesPerView: 1 },
-        768: { slidesPerView: 1.5 },
-        1024: { slidesPerView: 2 },
-        1440: { slidesPerView: 2.5 },
-        1920: { slidesPerView: 3 },
-      }}
-    >
-      {slides.map((slide) => (
-        <SwiperSlide key={slide.id} className={styles.slider__slide}>
-          <img
-            src={slide.imageUrl}
-            alt={`Slide ${slide.id}`}
-            className="swiper-lazy"
-          />
-          <div className="swiper-lazy-preloader"></div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <div className={`relative ${styles.slider_wrapper}`}>
+      <Swiper
+        onSwiper={setSwiper}
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+        modules={[Navigation, EffectCoverflow, Autoplay]}
+        effect="coverflow"
+        centeredSlides={true}
+        slidesPerView="auto"
+        initialSlide={1}
+        loop={true}
+        speed={800}
+        spaceBetween={-100}
+        autoplay={{
+          delay: 4000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: false,
+        }}
+        coverflowEffect={{
+          depth: 0,
+          modifier: 1,
+          rotate: 0,
+          scale: 0.7,
+          stretch: 0,
+          slideShadows: false,
+        }}
+        className={styles.custom_swiper}
+      >
+        {slides.map((slide, index) => (
+          <SwiperSlide
+            key={slide.id}
+            className={`${styles.custom_slide} ${
+              index === activeIndex ? styles.custom_slide_active : ""
+            }`}
+          >
+            <img
+              src={slide.photoUrl || "/placeholder.svg"}
+              alt={`Slide ${slide.id}`}
+              className={styles.slide_image}
+              loading="lazy"
+            />
+            <div className="swiper-lazy-preloader"></div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      <button
+        onClick={handlePrev}
+        className={`${styles.slider__button} ${styles["slider__button--prev"]} `}
+      >
+        <FiChevronLeft className="text-2xl" />
+      </button>
+      <button
+        onClick={handleNext}
+        className={`${styles.slider__button} ${styles["slider__button--next"]} `}
+      >
+        <FiChevronRight className="text-2xl" />
+      </button>
+    </div>
   );
 };
 

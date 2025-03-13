@@ -1,17 +1,17 @@
 import styles from "../ui/style.module.scss";
 
-import { Slider } from "../../../features/Slider";
-import { SwiperSlider } from "../../../features/Swiper";
+import { CaseSlider } from "../../../features/CaseSlider";
 
 function Portfolio() {
   return (
-    <section className={`${styles.slider} w-full mx-auto my-20 relative`}>
+    <section className={`${styles.slider} w-full mx-auto mt-10 relative mb-12`}>
       <h2 className="flex items-center justify-center font-medium text-3xl mb-8">
-        <span className="text-black mr-4 font-bold">Наши работы</span>
+        <span className="font-poiret font-semibold text-[40px] max-w-3xl text-center mx-auto mb-16">
+          Наши работы
+        </span>
       </h2>
-      {/* <Slider /> */}
 
-      <SwiperSlider />
+      <CaseSlider />
     </section>
   );
 }
