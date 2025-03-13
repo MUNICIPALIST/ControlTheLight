@@ -1,0 +1,30 @@
+# Stage 1: Build the React app with Vite
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Copy source and build the app (assumes output goes to /app/dist)
+COPY . .
+RUN yarn build
+
+# Stage 2: Run the Express server to serve static files and proxy API requests
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+# Copy built files from builder stage
+COPY --from=builder /app/dist ./dist
+# Copy server.js and package.json (for our server)
+COPY server.js .
+COPY package.json .
+
+# Install only production dependencies (and the proxy middleware)
+RUN yarn install --production
+
+# Expose the port (3000 in our example)
+EXPOSE 3000
+
+# Start the server
+CMD ["node", "server.js"]
