@@ -9,4 +9,5 @@ spec:
     - protocol: TCP
       port: 80        # Port exposed to the external world
       targetPort: 8080 # The port where the backend is running inside the container
+      nodePort: 31662
   type: NodePort      # Exposes the service outside the cluster
