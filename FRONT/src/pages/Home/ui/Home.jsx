@@ -20,7 +20,7 @@ function Home() {
 
       <Portfolio />
 
-      <Banner height={200}>
+      {/* <Banner height={200}>
         <img src={logo} className="w-[12%] h-auto" alt="" />
         <div className="center-content">
           <h2 className="text-milkWhiteCustom text-2xl font-semibold text-center">
@@ -37,7 +37,7 @@ function Home() {
           </Button>
         </div>
       </Banner>
-      <SwiperSlider />
+      <SwiperSlider /> */}
       <Footer />
     </div>
   );

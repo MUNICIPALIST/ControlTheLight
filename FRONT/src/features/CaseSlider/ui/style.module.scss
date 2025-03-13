@@ -1,6 +1,13 @@
 .sliderContainer {
   position: relative;
-  margin: 2rem 0;
+  margin: 2rem auto;
+  width: 100%;
+  // Добавляем отступ снизу для активного слайда
+  padding-bottom: 30px;
+
+  @media (min-width: 768px) {
+    padding: 0 10% 30px 10%;
+  }
 
   // Navigation buttons styling
   .navButton {
@@ -10,6 +17,8 @@
     transform: translateY(-50%);
     border-radius: 9999px;
     padding: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: all 0.2s ease;
 
     &:hover {
@@ -17,44 +26,66 @@
     }
 
     &.prevButton {
-      left: 10px;
+      left: 0;
 
       @media (min-width: 768px) {
-        left: 20px;
+        left: 2%;
       }
     }
 
     &.nextButton {
-      right: 10px;
+      right: 0;
 
       @media (min-width: 768px) {
-        right: 20px;
+        right: 2%;
       }
     }
   }
 
   // Fix for Swiper opacity issue
-  :global(.swiper-slide) {
-    opacity: 1 !important;
+  :global(.swiper) {
+    width: 100%;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    // Добавляем отступ снизу
+    padding-bottom: 20px;
   }
 
-  :global(.swiper-slide-active),
-  :global(.swiper-slide-prev),
-  :global(.swiper-slide-next) {
+  :global(.swiper-wrapper) {
+    align-items: stretch;
+    // Убедимся, что wrapper тоже имеет visible overflow по вертикали
+    overflow-y: visible !important;
+  }
+
+  :global(.swiper-slide) {
+    height: auto;
     opacity: 1 !important;
+    transition: all 0.3s ease;
+    display: flex;
+    // Добавляем отступ снизу для слайдов
+    padding-bottom: 20px;
+    // Убедимся, что слайд тоже имеет visible overflow по вертикали
+    overflow-y: visible !important;
   }
 
   // Slide styling
-  .swiperSlide {
-    height: auto;
-    transition: all 0.3s ease;
-  }
-
   .slide {
+    display: flex;
+    flex-direction: column;
     height: 100%;
+    width: 100%;
+    scale: 0.9;
     overflow: hidden;
     border-radius: 0.5rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    background-color: white;
+    transition: all 0.3s ease;
+
+    &.activeSlide {
+      transform: translateY(-10px) scale(1.03);
+      height: calc(100% + 20px);
+      z-index: 2;
+    }
 
     .imageContainer {
       position: relative;
@@ -66,6 +97,9 @@
     .contentContainer {
       background-color: #f3f4f6;
       padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .title {
@@ -89,7 +123,8 @@
     .moreLink {
       display: inline-flex;
       align-items: center;
-      margin-top: 1.5rem;
+      margin-top: auto;
+      padding-top: 1.5rem;
       color: #b45309;
 
       &:hover {
